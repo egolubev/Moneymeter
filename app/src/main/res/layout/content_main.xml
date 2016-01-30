@@ -62,19 +62,19 @@
             android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add">
+            android:text="Добавить">
         </Button>
         <Button
             android:id="@+id/btnRead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Read">
+            android:text="Прочитать">
         </Button>
         <Button
             android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear">
+            android:text="Очистить">
         </Button>
     </LinearLayout>
 </RelativeLayout>
