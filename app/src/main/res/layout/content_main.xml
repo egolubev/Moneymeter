@@ -55,5 +55,17 @@
             android:layout_height="wrap_content"
             android:text="Clear">
         </Button>
+
     </LinearLayout>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/sumPrice"
+        android:layout_weight="1"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp" />
 </RelativeLayout>

@@ -12,13 +12,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends Activity implements OnClickListener {
 
     final String LOG_TAG = "myLogs";
 
     Button btnAdd, btnRead, btnClear;
-    EditText etPrice;
+    EditText etPrice, sumPrice;
 
     DBHelper dbHelper;
 
@@ -38,6 +40,8 @@ public class MainActivity extends Activity implements OnClickListener {
         btnClear.setOnClickListener(this);
 
         etPrice = (EditText) findViewById(R.id.etPrice);
+
+        sumPrice = (EditText) findViewById(R.id.sumPrice);
 
         // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
@@ -61,8 +65,12 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.btnAdd:
                 Log.d(LOG_TAG, "--- Insert in mytable: ---");
                 // подготовим данные для вставки в виде пар: наименование столбца - значение
-
+                // вставка стоимость
                 cv.put("price", price);
+                // вставка дата
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String strDate = sdf.format(new Date());
+                cv.put("date_add", strDate);
                 // вставляем запись и получаем ее ID
                 long rowID = db.insert("mytable", null, cv);
                 Log.d(LOG_TAG, "row inserted, ID = " + rowID);
@@ -79,15 +87,20 @@ public class MainActivity extends Activity implements OnClickListener {
                     // определяем номера столбцов по имени в выборке
                     int idColIndex = c.getColumnIndex("id");
                     int priceColIndex = c.getColumnIndex("price");
+                    int dateColIndex = c.getColumnIndex("date_add");
+                    int sum = 0;
 
                     do {
                         // получаем значения по номерам столбцов и пишем все в лог
                         Log.d(LOG_TAG,
                                 "ID = " + c.getInt(idColIndex) +
-                                        ", price = " + c.getString(priceColIndex));
+                                        ", price = " + c.getInt(priceColIndex) +
+                                        ", date = " + c.getString(dateColIndex));
                         // переход на следующую строку
                         // а если следующей нет (текущая - последняя), то false - выходим из цикла
+                        sum = sum + c.getInt(priceColIndex);
                     } while (c.moveToNext());
+                    sumPrice.setText(Integer.toString(sum));
                 } else
                     Log.d(LOG_TAG, "0 rows");
                 c.close();
@@ -118,7 +131,8 @@ public class MainActivity extends Activity implements OnClickListener {
             // создаем таблицу с полями
             db.execSQL("create table mytable ("
                     + "id integer primary key autoincrement,"
-                    + "price text);");
+                    + "price text,"
+                    + "date_add date)");
         }
 
         @Override
