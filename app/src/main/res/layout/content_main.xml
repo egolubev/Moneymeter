@@ -16,38 +16,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:text="Price"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp">
         </TextView>
         <EditText
-            android:id="@+id/etName"
+            android:id="@+id/etPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <requestFocus>
             </requestFocus>
-        </EditText>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout1"
-        android:layout_centerHorizontal="true">
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp">
-        </TextView>
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
         </EditText>
     </LinearLayout>
     <LinearLayout
@@ -62,19 +41,19 @@
             android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Добавить">
+            android:text="Add">
         </Button>
         <Button
             android:id="@+id/btnRead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Прочитать">
+            android:text="Read">
         </Button>
         <Button
             android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Очистить">
+            android:text="Clear">
         </Button>
     </LinearLayout>
 </RelativeLayout>

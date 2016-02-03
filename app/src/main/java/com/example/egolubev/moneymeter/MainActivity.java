@@ -18,7 +18,7 @@ public class MainActivity extends Activity implements OnClickListener {
     final String LOG_TAG = "myLogs";
 
     Button btnAdd, btnRead, btnClear;
-    EditText etName, etEmail;
+    EditText etPrice;
 
     DBHelper dbHelper;
 
@@ -37,8 +37,7 @@ public class MainActivity extends Activity implements OnClickListener {
         btnClear = (Button) findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
 
-        etName = (EditText) findViewById(R.id.etName);
-        etEmail = (EditText) findViewById(R.id.etEmail);
+        etPrice = (EditText) findViewById(R.id.etPrice);
 
         // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
@@ -52,8 +51,7 @@ public class MainActivity extends Activity implements OnClickListener {
         ContentValues cv = new ContentValues();
 
         // получаем данные из полей ввода
-        String name = etName.getText().toString();
-        String email = etEmail.getText().toString();
+        String price = etPrice.getText().toString();
 
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -64,8 +62,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 Log.d(LOG_TAG, "--- Insert in mytable: ---");
                 // подготовим данные для вставки в виде пар: наименование столбца - значение
 
-                cv.put("name", name);
-                cv.put("email", email);
+                cv.put("price", price);
                 // вставляем запись и получаем ее ID
                 long rowID = db.insert("mytable", null, cv);
                 Log.d(LOG_TAG, "row inserted, ID = " + rowID);
@@ -81,15 +78,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
                     // определяем номера столбцов по имени в выборке
                     int idColIndex = c.getColumnIndex("id");
-                    int nameColIndex = c.getColumnIndex("name");
-                    int emailColIndex = c.getColumnIndex("email");
+                    int priceColIndex = c.getColumnIndex("price");
 
                     do {
                         // получаем значения по номерам столбцов и пишем все в лог
                         Log.d(LOG_TAG,
                                 "ID = " + c.getInt(idColIndex) +
-                                        ", name = " + c.getString(nameColIndex) +
-                                        ", email = " + c.getString(emailColIndex));
+                                        ", price = " + c.getString(priceColIndex));
                         // переход на следующую строку
                         // а если следующей нет (текущая - последняя), то false - выходим из цикла
                     } while (c.moveToNext());
@@ -123,8 +118,7 @@ public class MainActivity extends Activity implements OnClickListener {
             // создаем таблицу с полями
             db.execSQL("create table mytable ("
                     + "id integer primary key autoincrement,"
-                    + "name text,"
-                    + "email text" + ");");
+                    + "price text);");
         }
 
         @Override
