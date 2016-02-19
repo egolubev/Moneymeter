@@ -10,17 +10,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends Activity implements OnClickListener {
 
     final String LOG_TAG = "myLogs";
 
     Button btnAdd, btnRead, btnClear;
-    EditText etPrice, sumPrice;
+    EditText etPrice;
+
+    ListView sumPrice;
 
     DBHelper dbHelper;
 
@@ -36,12 +43,10 @@ public class MainActivity extends Activity implements OnClickListener {
         btnRead = (Button) findViewById(R.id.btnRead);
         btnRead.setOnClickListener(this);
 
-        btnClear = (Button) findViewById(R.id.btnClear);
-        btnClear.setOnClickListener(this);
+        //btnClear = (Button) findViewById(R.id.btnClear);
+        //btnClear.setOnClickListener(this);
 
         etPrice = (EditText) findViewById(R.id.etPrice);
-
-        sumPrice = (EditText) findViewById(R.id.sumPrice);
 
         // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
@@ -50,6 +55,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
+
+        List<String> names = new ArrayList<String>();
 
         // создаем объект для данных
         ContentValues cv = new ContentValues();
@@ -68,7 +75,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 // вставка стоимость
                 cv.put("price", price);
                 // вставка дата
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
                 String strDate = sdf.format(new Date());
                 cv.put("date_add", strDate);
                 // вставляем запись и получаем ее ID
@@ -78,7 +85,7 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.btnRead:
                 Log.d(LOG_TAG, "--- Rows in mytable: ---");
                 // делаем запрос всех данных из таблицы mytable, получаем Cursor
-                Cursor c = db.query("mytable", null, null, null, null, null, null);
+                Cursor c = db.query("mytable", new String[]{ "*", "SUM(price) AS price" }, null, null, "date_add", null, "date_add DESC");
 
                 // ставим позицию курсора на первую строку выборки
                 // если в выборке нет строк, вернется false
@@ -88,7 +95,8 @@ public class MainActivity extends Activity implements OnClickListener {
                     int idColIndex = c.getColumnIndex("id");
                     int priceColIndex = c.getColumnIndex("price");
                     int dateColIndex = c.getColumnIndex("date_add");
-                    int sum = 0;
+                    String price_one = "";
+                    String date_one = "";
 
                     do {
                         // получаем значения по номерам столбцов и пишем все в лог
@@ -97,20 +105,34 @@ public class MainActivity extends Activity implements OnClickListener {
                                         ", price = " + c.getInt(priceColIndex) +
                                         ", date = " + c.getString(dateColIndex));
                         // переход на следующую строку
-                        // а если следующей нет (текущая - последняя), то false - выходим из цикла
-                        sum = sum + c.getInt(priceColIndex);
+                        date_one = c.getString(dateColIndex).substring(0,10).concat(": ");
+                        price_one = c.getString(priceColIndex).concat(" руб.");
+                        names.add(date_one.concat(price_one));
                     } while (c.moveToNext());
-                    sumPrice.setText(Integer.toString(sum));
+
+
+                    // находим список
+                    ListView sumPrice = (ListView) findViewById(R.id.sumPrice);
+
+                    // создаем адаптер
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                            android.R.layout.simple_list_item_1, names);
+
+                    // присваиваем адаптер списку
+                    sumPrice.setAdapter(adapter);
+
+
+
                 } else
                     Log.d(LOG_TAG, "0 rows");
                 c.close();
                 break;
-            case R.id.btnClear:
-                Log.d(LOG_TAG, "--- Clear mytable: ---");
-                // удаляем все записи
-                int clearCount = db.delete("mytable", null, null);
-                Log.d(LOG_TAG, "deleted rows count = " + clearCount);
-                break;
+//            case R.id.btnClear:
+//                Log.d(LOG_TAG, "--- Clear mytable: ---");
+//                // удаляем все записи
+//                int clearCount = db.delete("mytable", null, null);
+//                Log.d(LOG_TAG, "deleted rows count = " + clearCount);
+//                break;
         }
         // закрываем подключение к БД
         dbHelper.close();
